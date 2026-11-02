@@ -1,0 +1,410 @@
+/*Roboto Slab pour les descriptions*/
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=DM+Serif+Text:ital@0;1&family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto+Slab:wght@100..900&family=Sigmar&display=swap');
+
+/*DM serif text pour les gros titres, trucs qui doivent attirer ton attention!*/
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto+Slab:wght@100..900&family=Sigmar&display=swap');
+
+
+/*PLaster logo*/
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Climate+Crisis:YEAR@1979&family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Plaster&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto+Slab:wght@100..900&family=Sigmar&display=swap');
+
+
+:root {
+  --navy: #2F4858;
+  --jeans: #33658A;
+  --lilac: #BBD0FF;
+  --correct: #69C0A5;
+  --green: #329374;
+
+  --bg: #ffffff;
+  --text: #111111;
+  --card: #ffffff;
+}
+
+
+
+* {
+    box-sizing: border-box;
+}
+ 
+body {
+    margin: 0;                       
+    min-height: 100vh;
+    display: flex;                  
+    flex-direction: column;
+    font-family: system-ui, sans-serif;
+    background: aliceblue;
+    background-attachment: fixed;
+    color: var(--text);
+}
+
+
+.navbar {
+    width: calc(100% - 40px);       
+    max-width: 1200px;
+    height: 75px;
+    margin: 25px auto;
+    padding: 15px 35px;
+    background: var(--navy);
+    border-radius: 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.verticalComposition {
+    width: calc(100% - 40px);
+    max-width: 1200px;
+    margin: 0 auto 3rem;            
+    padding: 2rem;
+    background-color: var(--bg);
+    border-radius: 16px;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+nav a:hover {
+    color: var(--lilac);
+}
+footer {
+    margin-top: auto;          
+    padding: 1.5rem 2rem;
+    color: var(--bg);
+    background-color: var(--navy);
+}
+ 
+.logo {
+  color: white;
+  flex-shrink: 0;
+  font-family: "Plaster", system-ui;
+  font-size: 30px;
+  text-decoration: none;
+}
+
+
+.logo:hover {
+    color: var(--lilac);
+}
+
+
+.signatureYC {
+    max-width: 100px;
+}
+
+/*---------- Title ----------*/
+  .line {
+    width: 170px;
+    height: 5px;
+    background: #00A896;
+    border-radius: 5px;
+    margin-bottom: 35px;
+  }
+
+
+/* ---------- Filter ---------- */
+form {
+    max-width: 900px;
+    margin: 1rem auto;
+    padding: 0 1rem;
+}
+ 
+select,
+option,
+button {
+    padding: 0.4rem 0.8rem;
+    border: 2px solid var(--jeans);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--navy);
+    cursor: pointer;
+}
+
+
+ 
+/* ---------- List of cards ---------- */
+.card-cours {
+    max-width: 900px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+ 
+/* ---------- One card ---------- */
+.travaux {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        "titre   badges"
+        "type    cours"
+        "desc    desc"
+        "lien    lien";
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+ 
+    background: #fff;
+    border: 2px solid var(--jeans);
+    border-left: 14px solid var(--green);   /* the pink bar */
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+}
+
+
+.travaux:hover {
+    box-shadow: 5px 10px var(--lilac);
+}
+
+ 
+.titre-travail {
+    grid-area: titre;
+    margin: 0;
+    color: var(--navy);
+    font-family: "DM Serif Text", serif;
+}
+ 
+/* the two little pills at the top right */
+.badges {
+    grid-area: badges;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+ 
+.date-travail,
+.disponible {
+    background: var(--correct);
+    color: #fff;
+    padding: 0.15rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+ 
+.type-travail {
+    grid-area: type;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: normal;
+    text-transform: capitalize;
+}
+ 
+.cours-travail {
+    grid-area: cours;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: normal;
+    text-align: right;
+    color: var(--jeans);
+}
+ 
+.description-travail {
+    grid-area: desc;
+    margin: 0.5rem 0;
+    line-height: 1.4;
+ 
+    /* show at most 3 lines, then "..." */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    font-family: "Roboto Slab", serif;
+}
+ 
+/* the "voir travail" link looks like a button */
+.travaux a {
+    grid-area: lien;
+    justify-self: start;
+    background: var(--jeans);
+    color: #fff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+}
+ 
+.travaux a:hover {
+    background: var(--navy);
+}
+ 
+
+
+/* ---------- Travail page ---------- */
+.page-travail {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* the colored box: only the travail info */
+.detail-travail {
+    /*background-image: url(images/Background_leaves.png);*/
+    background-color:var(--bg);
+    border-radius: 10px;
+    padding: 2rem 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;          /* centers the title and everything inside */
+}
+
+.detail-travail .titre-travail {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+}
+
+/* undo the card styles (grid-area, text-align: right) for this page */
+.detail-travail .cours-travail,
+.detail-travail .type-travail {
+    margin: 0.25rem 0;
+    text-align: center;
+    font-weight: normal;
+}
+
+.detail-travail .badges {
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+/* on the home page the description is cut at 3 lines, here we want it all */
+.detail-travail .description-travail {
+    display: block;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    overflow: visible;
+    max-width: 60ch;
+    margin: 1rem auto 0;
+}
+
+
+/* ---------- Sections under the travail ---------- */
+.section-creneaux,
+.section-top3 {
+    margin: 2rem 0;
+}
+
+.section-creneaux h2,
+.section-top3 h2 {
+    color: var(--navy);
+    border-bottom: 2px solid var(--jeans);
+    padding-bottom: 0.4rem;
+}
+
+/* ---------- Form ---------- */
+/* cancel the global "form" rule (max-width, auto margins, padding) */
+.section-creneaux form {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* label on top of its input */
+.champ {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    max-width: 400px;
+}
+
+.champ label {
+    font-weight: bold;
+    color: var(--navy);
+}
+
+input[type="text"] {
+    padding: 0.5rem 0.7rem;
+    border: 2px solid var(--jeans);
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--coral);
+}
+
+/* one row per creneau */
+.liste-creneaux {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.creneau-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.9rem;
+    border: 2px solid var(--lilac);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.creneau-option:hover {
+    background: var(--lilac);
+}
+
+.creneau-option input {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--jeans);
+}
+
+.section-creneaux button {
+    align-self: flex-start;
+    background: var(--jeans);
+    color: #fff;
+}
+
+.section-creneaux button:hover {
+    background: var(--navy);
+}
+
+
+.erreur {
+    background: #fdecea;
+    color: var(--burgundy);
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+}
+
+/* ---------- TOP 3 table ---------- */
+.section-top3 {
+    overflow-x: auto;   /* scrolls inside its box on small screens */
+}
+
+.section-top3 table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.section-top3 th {
+    text-align: left;
+    background: var(--navy);
+    color: #fff;
+    padding: 0.7rem 1rem;
+}
+
+.section-top3 td {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--lilac);
+}
+
+.section-top3 tr:nth-child(even) td {
+    background: #f5f8ff;
+}
