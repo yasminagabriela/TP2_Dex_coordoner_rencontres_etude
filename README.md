@@ -1,22 +1,38 @@
 # Dex — coordonner les rencontres d'étude d'un cours
 
-TP1 — Yasmina Gabriela Cabrera
+=======
+TP2 — Yasmina Gabriela Cabrera
 
-Dex est une petite application Web en PHP qui permet à des étudiants d'indiquer leurs disponibilités pour un travail et qui met en évidence les créneaux convenant au plus grand nombre.
+Dex aide les étudiants à coordonner leurs rencontres d'équipe : chacun coche ses disponibilités pour un travail et l'app met en évidence les meilleurs créneaux. Architecture en trois couches : API Express (Node.js), site PHP (cadre et routage) et interface Vue.js. Inclut une page d'administration protégée pour l'enseignant.
 
+## Du TP1 au TP2
 
+Au TP1, Dex était une application PHP classique, avec un rendu entièrement côté serveur : chaque clic rechargeait une page complète construite par le serveur.
+
+Le TP2 reprend le même outil, mais répartit le travail entre trois parties :
+
+- **API Express (Node.js)** : seule couche qui communique avec la base de données.
+- **Site PHP** : fournit le cadre commun des pages (en-tête, pied de page) et le routage.
+- **Interface Vue.js** : affiche les données, gère les interactions utilisateur et communique avec l'API.
+
+Une **page d'administration protégée** s'ajoute : l'enseignant peut s'y connecter pour modifier un travail et ses créneaux.
 
 ## Contenu du projet
 
+<!-- À ajuster selon les noms réels des dossiers et fichiers -->
+
 ```
-TP1_Dex_coordoner_rencontres_etude/
-├── PDO_connexion_Db/
-│   ├── connexion.php    (connexion PDO à DexBD)
-│   └── init.php         (création des tables et des données initiales)
-├── pages/
-│   ├── index.php        (accueil : travaux ouverts, filtre par cours)
-│   ├── travail.php      (détails d'un travail, formulaire, disponibilités)
-│   └── template.php     (en-tête, pied de page et fonctions partagées)
+TP2_Dex_coordoner_rencontres_etude/
+├── api/                  (API Express)
+│   ├── package.json
+│   └── server.js         (point d'entrée, routes, connexion à DexBD)
+├── pages/                (site PHP)
+│   ├── index.php         (accueil : travaux ouverts, filtre par cours)
+│   ├── travail.php       (détails d'un travail et disponibilités)
+│   ├── admin.php         (administration protégée)
+│   └── template.php      (en-tête, pied de page et fonctions partagées)
+├── vue/                  (composants et scripts Vue.js)
+>>>>>>> 287a15b675c2989ed5b3222ac77e16f227680229
 ├── UI/
 │   ├── style.css
 │   └── images/
@@ -30,16 +46,24 @@ TP1_Dex_coordoner_rencontres_etude/
 1. **Placer le projet** dans le dossier `htdocs` de XAMPP
    (par défaut `C:\xampp\htdocs\`).
 2. **Démarrer Apache et MySQL** dans le panneau de contrôle XAMPP (boutons *Start*).
-3. **Vérifier les identifiants MySQL** dans `PDO_connexion_Db/connexion.php` et
-   `PDO_connexion_Db/init.php`. Par défaut : utilisateur `root`, mot de passe vide.
-4. **Initialiser la base de données** en ouvrant dans le navigateur :
-   `http://localhost/TP1_Dex_coordoner_rencontres_etude/PDO_connexion_Db/init.php`
 
-   Le script crée la base **DexBD**, les quatre tables (`cours`, `travaux`,
-   `creneaux`, `disponibilites`) et insère le jeu de données initial.
-   Il peut être relancé sans erreur et sans doublon.
-5. **Ouvrir l'application** :
-   `http://localhost/TP1_Dex_coordoner_rencontres_etude/pages/index.php`
+3. **Vérifier les identifiants MySQL** dans la configuration de l'API.
+   Par défaut : utilisateur `root`, mot de passe vide.
+4. **Installer et lancer l'API** :
+
+   ```bash
+   cd api
+   npm install
+   node server.js
+   ```
+
+   L'API écoute par défaut sur `http://localhost:3000`.
+5. **Initialiser la base de données** si elle n'existe pas encore : le script
+   crée la base **DexBD**, les tables (`cours`, `travaux`, `creneaux`,
+   `disponibilites`) et insère le jeu de données initial. Il peut être relancé
+   sans erreur et sans doublon.
+6. **Ouvrir l'application** :
+   `http://localhost/TP2_Dex_coordoner_rencontres_etude/pages/index.php`
 
 ## Utilisation
 
@@ -51,4 +75,13 @@ TP1_Dex_coordoner_rencontres_etude/
 4. Le tableau affiche, pour chaque créneau, le nombre d'étudiants disponibles
    et leurs noms. Les meilleurs créneaux sont mis en évidence.
 5. Pour modifier sa réponse, soumettre de nouveau le formulaire avec le même
+
    matricule : les anciennes disponibilités de ce travail sont remplacées.
+
+## Administration
+
+1. Ouvrir la page d'administration :
+   `http://localhost/TP2_Dex_coordoner_rencontres_etude/pages/admin.php`
+2. Se connecter avec le compte enseignant.
+3. Modifier les informations d'un travail (titre, description, type, dates)
+   et ses créneaux, puis enregistrer.
