@@ -1,0 +1,23 @@
+{
+  "name": "tp2_dex_coordoner_rencontres_etude",
+  "version": "1.0.0",
+  "description": "Aide aux études pour les étudiants, ce projet est dans le context du cours Programmation web 2 (TP2 dex)",
+  "homepage": "https://github.com/yasminagabriela/TP2_Dex_coordoner_rencontres_etude#readme",
+  "bugs": {
+    "url": "https://github.com/yasminagabriela/TP2_Dex_coordoner_rencontres_etude/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yasminagabriela/TP2_Dex_coordoner_rencontres_etude.git"
+  },
+  "license": "ISC",
+  "author": "Yasmina Gabriela Cabrera",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}

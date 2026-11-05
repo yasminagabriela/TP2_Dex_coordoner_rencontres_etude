@@ -1,0 +1,7 @@
+# Contenu du .gitignore
+*.tmp
+*.log
+log.txt
+# Ignorer le dossier temp
+temp/
+node_modules/
