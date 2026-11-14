@@ -100,7 +100,8 @@ adminRouter.route('/api/connexion')
 // Réponses : 204, 401, 500
 adminRouter.route('/api/deconnexion')
     .post(verifierToken, (req, res) => {
-
+        jetons.delete(req.jeton);
+        res.status(204).end();
     })
     .all(methodeNonPermise);
 
