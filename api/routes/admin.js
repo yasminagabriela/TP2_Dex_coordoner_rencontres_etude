@@ -50,8 +50,46 @@ function verifierToken(req, res, next) {
 // Cherche l'utilisateur (requête préparée), vérifie le mot de passe (bcrypt), retourne un jeton.
 // Réponses : 200 (avec jeton), 400, 401, 500
 adminRouter.route('/api/connexion')
-    .post((req, res) => {
-        const { identifiant, motDePasse } = req.body;
+    .post( async(req, res) => {
+        const { identifiant, motDePasse } = req.body ?? {};
+
+        // Validation (400)
+        if(typeof identifiant !== 'string' || identifiant.trim() === '' || typeof motDePasse !== 'string' || motDePasse === '') {
+            return res.status(400).json({erreurs : ['Identifiant et mot de passe obligatoires.'] })
+        }
+
+        // chercher enseignant
+        try {
+            const [lignes] = await pool.execute(
+                'SELECT id, nom, mot_de_passe_hache FROM utilisateurs WHERE identifiant = ?',
+                [identifiant.trim()]
+            );
+
+            const utilisateur = lignes[0];
+
+            // ici on va comparer le mdp avec bycrpt
+            const valide = utilisateur
+            ? await bcrypt.compare(motDePasse, utilisateur.mot_de_passe_hache)
+            : false;
+
+            if (!valide) {
+                return res.status(401).json({erreurs : ['Identifiant ou Mot de passe invalide.'] });
+            }
+
+            // créer un token
+            const jeton = crypto.randomBytes(32).toString('hex');
+            jetons.set(jeton, {
+                id : utilisateur.id,
+                nom: utilisateur.nom,
+                expiration : Date.now() + DUREE_JETON
+            });
+
+            res.status(200).json({jeton, nom: utilisateur.nom});
+
+        } catch (erreur) {
+            console.error(erreur);
+            res.json(500).json({ erreurs: ['Erreur du serveur.'] });
+        }
 
     })
     .all(methodeNonPermise);
