@@ -199,6 +199,7 @@ require_once __DIR__ . '/template.php';
 </main>
 
 <?php afficherPied(); ?>
+<script src="../vue/admin.js"></script>
 
 </body>
 </html>
