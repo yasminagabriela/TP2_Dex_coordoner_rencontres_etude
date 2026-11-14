@@ -1,6 +1,12 @@
 import { Router } from 'express';
+import bcrypt from 'bcrypt';
+import crypto from 'node:crypto';
+import pool from '../db.js';
 
 const adminRouter = Router();
+const jetons = new Map();
+const DUREE_JETON = 2 * 60 * 60 * 1000; // ceci est supposé d'être 2 heures (en millisecondes)
+
 
 // Répond 405 quand la méthode n'est pas permise sur une adresse existante.
 function methodeNonPermise(req, res) {
@@ -10,9 +16,23 @@ function methodeNonPermise(req, res) {
 // Middleware d'authentification, à ajouter seulement sur les routes protégées.
 // Vérifie l'en-tête « Authorization: Bearer <token> » :
 // jeton présent, connu et non expiré, sinon 401.
+//  « Est-ce que la personne qui fait cette requête est un enseignant connecté ? »
 function verifierToken(req, res, next) {
-    // TODO : lire req.headers.authorization, valider le jeton,
-    //        puis garder l'utilisateur dans req.utilisateur.
+   const entete = req.headers.authorization ?? '';
+   const [type, jeton] = entete.split(' ');
+
+    if(type !== 'Bearer' || !jeton) {
+        return res.status(401).json({ erreurs : ['Jeton manquant.'] });
+    }
+
+    const session = jetons.get(jeton);
+
+    if(!session || session.expiration < Date.now()) {
+        jetons.delete(jeton);
+        return res.status(401).json({ erreurs : ['Jeton invalide ou expiré. Reconnectez-vous.'] });
+    }
+    req.utilisateur = session;
+    req.jeton = jeton;
     next();
 }
 
