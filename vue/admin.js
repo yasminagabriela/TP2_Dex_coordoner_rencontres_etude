@@ -21,6 +21,7 @@ function afficherAdmin(nom) {
     nomEnseignant.textContent = nom;
     sectionConnexion.hidden = true;
     sectionAdmin.hidden = false;
+    chargerTravaux();
 }
 
 function afficherConnexion() {
@@ -163,6 +164,49 @@ function cellule(texte) {
     const td = document.createElement('td');
     td.textContent = texte;
     return td;
+}
+
+
+
+
+// -------- charger les travaux ----------
+
+async function chargerTravaux() {
+    const reponse = await fetchAdmin('/api/admin/travaux');
+    if(!reponse.ok) return;
+
+    const travaux = await reponse.json();
+    tbodyTravaux.replaceChildren();
+
+    for (const travail of travaux) {
+        const tr = document.createElement('tr');
+        tr.append(
+            cellule(travail.cours_titre),
+            cellule(travail.titre),
+            cellule(versTexte(travail.remise))
+        );
+
+        const tdEtat = document.createElement('td');
+        const badge = document.createElement('span');
+        badge.className = travail.ouvert ? 'badge-ouvert' : 'badge-ferme';
+        badge.textContent = travail.ouvert ? 'Ouvert' : 'Fermé';
+        tdEtat.append(badge);
+
+
+
+        const tdAction = document.createElement('td');
+        const bouton = document.createElement('button');
+        bouton.type = 'button';
+        bouton.textContent = 'Modifier';
+        bouton.addEventListener('click', () => ouvrirTravail(travail.id));
+        tdAction.append(bouton);
+
+        tr.append(tdEtat, tdAction);
+        tbodyTravaux.append(tr);
+
+    }
+
+
 }
 
 
