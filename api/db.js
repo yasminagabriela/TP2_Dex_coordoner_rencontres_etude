@@ -14,7 +14,8 @@ const pool = mysql.createPool({
     user : 'root',
     password : '',
     database : 'DexAppBD',
-    charset : 'utf8mb4'
+    charset : 'utf8mb4',
+    dateStrings : true
 });
 
 
