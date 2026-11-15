@@ -115,6 +115,57 @@ async function fetchAdmin(url, options = {}) {
 }
 
 
+
+// ---------- variables pour afficher page admin.php --------
+
+const tbodyTravaux        = document.getElementById('tbody-travaux');
+const sectionModifier     = document.getElementById('section-modifier-travail');
+const coursTravailEdit    = document.getElementById('cours-travail-edit');
+const erreursTravail      = document.getElementById('erreurs-travail');
+const formTravail         = document.getElementById('form-travail');
+const champTravailId      = document.getElementById('travail-id');
+const champTitre          = document.getElementById('titre');
+const champDescription    = document.getElementById('description');
+const champType           = document.getElementById('type');
+const champDisponible     = document.getElementById('disponible');
+const champRemise         = document.getElementById('remise');
+const champOuvert         = document.getElementById('ouvert');
+const erreursCreneaux     = document.getElementById('erreurs-creneaux');
+const tbodyCreneaux       = document.getElementById('tbody-creneaux');
+
+
+
+// --------- fonctions pour bien afficher ----------
+
+
+// "2026-10-18 23:59:00" (MySQL) → "2026-10-18T23:59" (champ datetime-local)
+function versChampDateHeure(valeurSql) {
+    return valeurSql.replace(' ', 'T').slice(0, 16);
+}
+
+// "2026-10-18 23:59:00" → "2026-10-18 23:59" (pour l'affichage)
+function versTexte(valeurSql) {
+    return valeurSql.slice(0, 16);
+}
+
+
+function afficherErreurs(liste, erreurs) {
+    liste.replaceChildren();
+    for (const erreur of erreurs) {
+        const li = document.createElement('li');
+        li.textContent = erreur;
+        liste.append(li);
+    }
+}
+
+// Crée une cellule <td> avec du texte.
+function cellule(texte) {
+    const td = document.createElement('td');
+    td.textContent = texte;
+    return td;
+}
+
+
 // ---------- vérifie si déjà connecté ----------
 
 const nomSauvegarde = sessionStorage.getItem('nom');
