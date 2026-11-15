@@ -210,6 +210,81 @@ async function chargerTravaux() {
 }
 
 
+
+// --------- ouvrir un travail ----------
+
+async function ouvrirTravail(travailId) {
+    const reponse = await fetchAdmin(`/api/travaux/${encodeURIComponent(travailId)}`);
+    if(!reponse.ok) return;
+
+    const travail = await reponse.json();
+
+    champTravailId.value         = travail.id;
+    coursTravailEdit.textContent = travail.cours_titre;
+    champTitre.value             = travail.titre;
+    champDescription.value       = travail.description;
+    champType.value              = travail.type;
+    champDisponible.value        = travail.disponible;
+    champRemise.value            = versChampDateHeure(travail.remise);
+    champOuvert.checked          = Boolean(travail.ouvert);
+
+    afficherErreurs(erreursTravail, []);
+    afficherErreurs(erreursCreneaux, []);
+    afficherCreneaux(travail.creneaux);
+
+    sectionModifier.hidden = false;
+    sectionModifier.scrollIntoView({ behavior: 'smooth' });
+
+}
+
+
+
+function afficherCreneaux(creneaux) {
+        tbodyCreneaux.replaceChildren();
+
+    for (const creneau of creneaux) {
+        const tr = document.createElement('tr');
+
+        const champDebut = document.createElement('input');
+        champDebut.type = 'datetime-local';
+        champDebut.value = versChampDateHeure(creneau.debut);
+        champDebut.setAttribute('aria-label', 'Début du créneau');
+
+        const champFin = document.createElement('input');
+        champFin.type = 'datetime-local';
+        champFin.value = versChampDateHeure(creneau.fin);
+        champFin.setAttribute('aria-label', 'Fin du créneau');
+
+        const tdDebut = document.createElement('td');
+        tdDebut.append(champDebut);
+        const tdFin = document.createElement('td');
+        tdFin.append(champFin);
+
+        const btnEnregistrer = document.createElement('button');
+        btnEnregistrer.type = 'button';
+        btnEnregistrer.textContent = 'Enregistrer';
+        btnEnregistrer.addEventListener('click', () =>
+            modifierCreneau(creneau.id, champDebut.value, champFin.value)
+        );
+
+        const btnSupprimer = document.createElement('button');
+        btnSupprimer.type = 'button';
+        btnSupprimer.className = 'btn-danger';
+        btnSupprimer.textContent = 'Supprimer';
+        btnSupprimer.addEventListener('click', () =>
+            supprimerCreneau(creneau.id, creneau.nb_reponses)
+        );
+
+        const tdActions = document.createElement('td');
+        tdActions.className = 'actions';
+        tdActions.append(btnEnregistrer, btnSupprimer);
+
+        tr.append(tdDebut, tdFin, cellule(creneau.nb_reponses), tdActions);
+        tbodyCreneaux.append(tr);
+    }
+}
+
+
 // ---------- vérifie si déjà connecté ----------
 
 const nomSauvegarde = sessionStorage.getItem('nom');
