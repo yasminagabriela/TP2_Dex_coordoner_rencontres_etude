@@ -106,13 +106,37 @@ adminRouter.route('/api/deconnexion')
     .all(methodeNonPermise);
 
 
+
+
+
+
 // ------ routes protégées (pour les enseignants) ------
 
 // GET /api/admin/travaux
 // Travaux ouverts et fermés des cours de l'enseignant, avec le titre du cours.
 // Réponses : 200, 401, 500
 adminRouter.route('/api/admin/travaux')
-    .get(verifierToken, (req, res) => {
+    .get(verifierToken, async (req, res) => {
+        try {
+
+            const [travaux] = await pool.execute(`
+                SELECT travaux.id, travaux.cours_id, cours.titre AS cours_titre,
+                       travaux.titre, travaux.description, travaux.type,
+                       travaux.disponible, travaux.remise, travaux.ouvert
+                FROM travaux
+                JOIN cours ON cours.id = travaux.cours_id
+                WHERE cours.utilisateur_id = ?
+                ORDER BY cours.titre, travaux.remise
+            `, [req.utilisateur.id]
+            );
+
+            res.status(200).json(travaux);
+
+
+        } catch (erreur) {
+            console.error(erreur);
+            res.status(500).json({ erreurs: ['Erreur du serveur.'] });
+        }
 
     })
     .all(methodeNonPermise);
