@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import pool from '../db.js';
 
 const publicRouter = Router();
 
@@ -35,8 +36,43 @@ publicRouter.route('/api/travaux')
 // Un travail (ouvert ou fermé) avec ses créneaux.
 // Réponses : 200, 404, 500
 // Note : pas de .all(405) ici, car PUT /api/travaux/:id existe dans admin.js.
-publicRouter.get('/api/travaux/:id', (req, res) => {
+publicRouter.get('/api/travaux/:id', async (req, res) => {
     const travailId = req.params.id;
+
+
+    try{
+        const [travaux] = await pool.execute(`
+            SELECT travaux.id, travaux.cours_id, cours.titre AS cours_titre,
+                   travaux.titre, travaux.description, travaux.type,
+                   travaux.disponible, travaux.remise, travaux.ouvert
+            FROM travaux
+            JOIN cours ON cours.id = travaux.cours_id
+            WHERE travaux.id = ?
+        `, [travailId]);
+
+        if(travaux.length === 0) {
+            return res.status(404).json({ erreurs : ['Travail introuvable.'] });
+        }
+
+
+        const [creneaux] = await pool.execute(`
+            SELECT creneaux.id, creneaux.debut, creneaux.fin,
+                   COUNT(disponibilites.id) AS nb_reponses
+            FROM creneaux
+            LEFT JOIN disponibilites ON disponibilites.creneau_id = creneaux.id
+            WHERE creneaux.travail_id = ?
+            GROUP BY creneaux.id, creneaux.debut, creneaux.fin
+            ORDER BY creneaux.debut
+        `, [travailId]);
+
+
+        res.status(200).json({ ...travaux[0], creneaux });
+
+
+    } catch(erreur) {
+        console.error(erreur);
+        res.status(500).json({ erreurs : ['Erreur du serveur.'] });
+    }
 
 });
 
