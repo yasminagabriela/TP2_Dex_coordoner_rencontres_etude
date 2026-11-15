@@ -88,7 +88,7 @@ adminRouter.route('/api/connexion')
 
         } catch (erreur) {
             console.error(erreur);
-            res.json(500).json({ erreurs: ['Erreur du serveur.'] });
+            res.status(500).json({ erreurs: ['Erreur du serveur.'] });
         }
 
     })

@@ -1,6 +1,6 @@
 <?php
 $host = "localhost";
-$dbname = "DexBD";
+$dbname = "DexAppBD";
 $user = "root";
 $password = "";
 

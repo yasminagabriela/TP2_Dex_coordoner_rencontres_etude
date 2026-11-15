@@ -1,7 +1,5 @@
 // ici va être la logique de admin.php liée avec l'api php
 
-import { response } from "express";
-
 const API = 'http://localhost:3000';
 
 // ---- variables -----
@@ -30,8 +28,8 @@ function afficherConnexion() {
     sectionConnexion.hidden = false;
 }
 
-function afficherErreur(messsage) {
-    erreurConnexion.textContent = MessageChannel;
+function afficherErreur(message) {
+    erreurConnexion.textContent = message;
     erreurConnexion.hidden = false;
 }
 
@@ -47,13 +45,13 @@ formConnexion.addEventListener('submit', async (evenement) => {
             method: 'POST',
             headers : { 'Content-Type' : 'application/json' },
             body : JSON.stringify({
-                identifiant : champIdentifiant.ariaValueMax.trim(),
+                identifiant : champIdentifiant.value.trim(),
                 motDePasse: champMotDePasse.value
             })
         });
 
 
-        const donnees = await response.json();
+        const donnees = await reponse.json();
         if (!reponse.ok) {
             afficherErreur(donnees.erreurs.join(' '));
             return;
