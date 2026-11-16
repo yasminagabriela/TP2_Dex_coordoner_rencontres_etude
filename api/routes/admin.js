@@ -82,6 +82,30 @@ function validerCreneau(corps) {
 }
 
 
+async function chercherTravail(travailId) {
+    const [lignes] = await pool.execute(`
+        SELECT travaux.id, cours.utilisateur_id
+        FROM travaux
+        JOIN cours ON cours.id = travaux.cours_id
+        WHERE travaux.id = ?
+    `, [travailId]);
+    return lignes[0];
+}
+
+
+async function chercherCreneau(creneauId) {
+    const [lignes] = await pool.execute(`
+        SELECT creneaux.id, creneaux.travail_id, cours.utilisateur_id
+        FROM creneaux
+        JOIN travaux ON travaux.id = creneaux.travail_id
+        JOIN cours   ON cours.id   = travaux.cours_id
+        WHERE creneaux.id = ?
+    `, [creneauId]); 
+    return lignes[0];
+}
+
+
+
 // Ordre des vérifications pour les routes protégées :
 // 1. jeton valide (401)
 // 2. le travail ou le créneau existe (404)
