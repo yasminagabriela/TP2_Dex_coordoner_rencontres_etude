@@ -217,9 +217,65 @@ adminRouter.route('/api/admin/travaux')
 // Modifie un travail. Son cours ne peut pas être changé.
 // Réponses : 200 ou 204, 400, 401, 403, 404, 500
 // Note : pas de .all(405) ici, car GET /api/travaux/:id existe dans public.js.
-adminRouter.put('/api/travaux/:id', verifierToken, (req, res) => {
+adminRouter.put('/api/travaux/:id', verifierToken, async (req, res) => {
     const travailId = req.params.id;
-    const { titre, description, type, disponible, remise, ouvert } = req.body;
+
+    try {
+        const travail = await chercherTravail(travailId);
+
+        if (!travail) {
+            return res.status(404).json({erreurs : ["Travail introuvable"] });
+
+        } if(travail.utilisateur_id !== req.utilisateur.id) {
+            return res.status(403).json({ erreurs : ["Ce travail n'appartient pas à vos cours."] });
+        }
+
+        const { titre, description, type, disponible, remise, ouvert } = req.body ?? {};
+        const dateDisponible = lireDate(disponible);
+        const dateRemise = lireDateHeure(remise);
+        const erreurs = [];
+
+
+        if(typeof titre !== 'string' || titre.trim() === '' || titre.trim().length > 150) {
+            erreurs.push("Le titre est obligatoitre.");
+        }
+        if(typeof description !== 'string' || description.trim()){
+            erreurs.push("La description est obligatoire");
+        }
+        
+        if (type !== 'individuel' && type !== 'equipe') {
+            erreurs.push('Le type doit être « individuel » ou « equipe ».');
+        }
+        if (!dateDisponible) {
+            erreurs.push('La date de disponibilité est invalide.');
+        }
+        if (!dateRemise) {
+            erreurs.push('La date de remise est invalide.');
+        }
+        if (dateDisponible && dateRemise && dateRemise.slice(0, 10) < dateDisponible) {
+            erreurs.push('La remise doit être après la date de disponibilité.');
+        }
+        if (typeof ouvert !== 'boolean') {
+            erreurs.push('Le champ « ouvert » doit être vrai ou faux.');
+        }
+
+        if (erreurs.length > 0) {
+            return res.status(400).json({ erreurs });
+        }
+
+        // Pas de cours_id dans le UPDATE : le cours ne peut pas changer.
+        await pool.execute(`
+            UPDATE travaux
+            SET titre = ?, description = ?, type = ?, disponible = ?, remise = ?, ouvert = ?
+            WHERE id = ?
+        `, [titre.trim(), description.trim(), type, dateDisponible, dateRemise, ouvert, travailId]);
+
+        res.status(204).end();
+
+    } catch (erreur) {
+        console.error(erreur);
+        res.status(500).json({ erreurs : ['Erreur de server.'] });
+    }
 
 });
 
