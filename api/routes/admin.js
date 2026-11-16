@@ -36,6 +36,52 @@ function verifierToken(req, res, next) {
     next();
 }
 
+
+
+// ---------- outils de l'API -----------
+
+function lireDateHeure(valeur) {
+    if (typeof valeur !== 'String')  return null;
+
+    const morceaux = valeur.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?$/);
+    if (!morceaux) return null;
+
+    const [, annee, mois, jour, heure, minute, seconde = '00'] = morceaux;  
+    
+    
+    const date = new Date(Number(annee), Number(mois) - 1, Number(jour));
+    if (date.getMonth() !== Number(mois) - 1 || date.getDate() !== Number(jour)) return null;
+    if (Number(heure) > 23 || Number(minute) > 59 || Number(seconde) > 59) return null;
+
+    return `${annee}-${mois}-${jour} ${heure}:${minute}:${seconde}`;
+}
+
+
+
+
+// Accepte "2026-09-21". Retourne la même chaîne, ou null.
+function lireDate(valeur) {
+    if (typeof valeur !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(valeur)) return null;
+    return lireDateHeure(`${valeur} 00:00`) ? valeur : null;
+}
+
+
+
+
+// Valide { debut, fin } d'un créneau. Retourne { erreurs, debut, fin }.
+function validerCreneau(corps) {
+    const debut = lireDateHeure(corps?.debut);
+    const fin = lireDateHeure(corps?.fin);
+    const erreurs = [];
+
+    if (!debut) erreurs.push('Le début est obligatoire et doit être une date valide.');
+    if (!fin) erreurs.push('La fin est obligatoire et doit être une date valide.');
+    if (debut && fin && debut >= fin) erreurs.push('La fin doit être après le début.');
+
+    return { erreurs, debut, fin };
+}
+
+
 // Ordre des vérifications pour les routes protégées :
 // 1. jeton valide (401)
 // 2. le travail ou le créneau existe (404)
