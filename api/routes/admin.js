@@ -285,9 +285,49 @@ adminRouter.put('/api/travaux/:id', verifierToken, async (req, res) => {
 // Ajoute un créneau au travail. L'id est généré : <id du travail>-NN (ex. web2-tp1-04).
 // Réponses : 201, 400, 401, 403, 404, 500
 adminRouter.route('/api/travaux/:id/creneaux')
-    .post(verifierToken, (req, res) => {
+    .post(verifierToken, async (req, res) => {
         const travailId = req.params.id;
-        const { debut, fin } = req.body;
+
+        try {
+            const travail = await chercherTravail(travailId);
+            if(!travail) {
+                return res.status(404).json({ erreurs : ['Travail introuvable :/'] });
+            }
+            if(travail.utilisateur_id !== req.utilisateur.id) {
+                return res.status(403).json({ erreurs : ["Ce travail n'appartient à aucun de vos cours."] });
+            }
+
+
+            const { erreurs, debut, fin } = validerCreneau(req.body);
+            if(erreurs.length > 0) {
+                return res.status(400).json({ erreurs });
+            }
+
+            const [existants] = await pool.execute(
+                'SELECT id FROM creneaux WHERE travail_id = ?',
+                [travailId]
+            );
+
+            let plusGrand = 0;
+            for(const creneau of existants) {
+                const numero = Number.parseInt(creneau.id.slice(travailId.length + 1));
+                if (numero > plusGrand) plusGrand = numero;
+            }
+
+            const nouvelId = `${travailId}-${String(plusGrand + 1).padStart(2, '0')}`;
+
+            await pool.execute(
+                'INSERT INTO creneaux (id, travail_id, debut, fin) VALUES (?, ?, ?, ?)',
+                [nouvelId, travailId, debut, fin]
+            );
+
+            res.status(201).json({ id: nouvelId, travail_id: travailId, debut, fin });
+
+        } catch(erreurs) {
+            console.error(erreur);
+            res.status(500).json({ erreurs : ['Erreur du server.'] });
+        }
+
 
     })
     .all(methodeNonPermise);
