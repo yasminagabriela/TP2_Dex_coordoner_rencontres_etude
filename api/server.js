@@ -17,9 +17,10 @@ app.use(express.json());
 app.use(adminRouter);
 app.use(publicRouter);
 
-app.use((erreur, req,res,next) => {
-  res.status(404).json({ erreurs : [ 'Ressource introuvable.'] });
+app.use((req, res) => {
+  res.status(404).json({ erreurs: ['Ressource introuvable.'] });
 });
+
 
 app.use((erreur,req,res,next) => {
   if(erreur.type === 'entity.parse.failed') {
