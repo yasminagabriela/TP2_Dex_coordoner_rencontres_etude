@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
     CONSTRAINT uq_utilisateur_identifiant UNIQUE (identifiant)
 );
 
--- Cours gérés dans l’application, chacun associé à  un enseignant.
+-- Cours gérés dans l’application, chacun associé à un enseignant.
 CREATE TABLE IF NOT EXISTS cours (
     id             VARCHAR(30)  PRIMARY KEY,
     titre          VARCHAR(100) NOT NULL,
@@ -80,7 +80,7 @@ INSERT IGNORE INTO travaux (id, cours_id, titre, description, type, disponible, 
      'Concevoir un modèle relationnel et produire le script SQL permettant de créer la base de données.',
      'equipe', '2026-10-05', '2026-10-25 23:59:00', TRUE),
     ('pfe-prototype', '420-253-AH', 'Prototype fonctionnel',
-     'Produire une première version fonctionnelle du projet et préparer une démonstration à  l''équipe enseignante.',
+     'Produire une première version fonctionnelle du projet et préparer une démonstration à l''équipe enseignante.',
      'equipe', '2026-09-15', '2026-10-09 23:59:00', TRUE);
 
 INSERT IGNORE INTO creneaux (id, travail_id, debut, fin) VALUES
