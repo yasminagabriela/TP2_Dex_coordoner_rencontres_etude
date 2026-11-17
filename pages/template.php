@@ -14,6 +14,7 @@ function afficherEntete(string $titre = 'Dex'): void
         <a href='index.php' class='logo'>DEX</a>
         <nav>
             <a href='index.php'>Accueil</a>
+            <a href='admin.php' class='lien-connexion'>Se connecter</a>
         </nav>
     </header>
     ";

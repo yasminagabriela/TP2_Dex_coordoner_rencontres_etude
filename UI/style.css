@@ -79,6 +79,18 @@ nav a {
 nav a:hover {
     color: var(--lilac);
 }
+
+/* lien « Se connecter » en forme de bouton dans la barre */
+nav .lien-connexion {
+    padding: 0.4rem 1rem;
+    border: 2px solid var(--lilac);
+    border-radius: 8px;
+}
+
+nav .lien-connexion:hover {
+    background: var(--lilac);
+    color: var(--navy);
+}
 footer {
     margin-top: auto;          
     padding: 1.5rem 2rem;
