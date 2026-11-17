@@ -184,10 +184,7 @@ require_once __DIR__ . '/template.php';
     <dialog id="dialog-suppression" class="dialog-suppression">
         <form method="dialog">
             <h2>Supprimer ce créneau ?</h2>
-            <p>
-                Ce créneau a <strong id="nb-reponses-suppression">3</strong> réponses.
-                Elles seront supprimées. Continuer ?
-            </p>
+            <p id="texte-suppression"></p>
 
             <div class="actions">
                 <button type="submit" value="annuler">Annuler</button>
