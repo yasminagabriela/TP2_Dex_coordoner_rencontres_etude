@@ -12,17 +12,17 @@ $titrePage  = 'Dex — Travail';
 $scriptPage = 'js/travail.js';
 require __DIR__ . '/includes/entete.php';
 ?>
-<div id="app-travail" data-travail-id="<?= htmlspecialchars($travailId) ?>" v-cloak>
+<div id="app-travail" class="page-travail" data-travail-id="<?= htmlspecialchars($travailId) ?>" v-cloak>
     <p v-if="erreur" class="erreur">{{ erreur }}</p>
 
     <template v-if="travail">
         <section class="detail-travail">
-            <h2 class="titre-travail">{{ travail.titre }}</h2>
-            <h3 class="cours-travail">{{ travail.cours_titre }}</h3>
-            <h3 class="type-travail">{{ travail.type }}</h3>
+            <p class="cours-travail">{{ travail.cours_titre }}</p>
+            <h1 class="titre-travail">{{ travail.titre }}</h1>
             <div class="badges">
-                <span class="date-travail">Remise : {{ travail.remise.slice(0, 16) }}</span>
+                <span class="type-travail">{{ travail.type }}</span>
                 <span class="disponible">Disponible : {{ travail.disponible }}</span>
+                <span class="date-travail">Remise : {{ travail.remise.slice(0, 16) }}</span>
             </div>
             <p class="description-travail">{{ travail.description }}</p>
         </section>
@@ -32,18 +32,19 @@ require __DIR__ . '/includes/entete.php';
             <p v-if="!travail.ouvert" class="erreur">Ce travail est fermé.</p>
 
             <form v-else @submit.prevent="enregistrer">
-                <ul class="erreurs"><li v-for="m in erreurs" :key="m">{{ m }}</li></ul>
+                <ul class="erreurs" v-if="erreurs.length"><li v-for="m in erreurs" :key="m">{{ m }}</li></ul>
                 <p v-if="message" class="succes">{{ message }}</p>
 
                 <div class="champ">
                     <label for="matricule">Matricule</label>
-                    <input id="matricule" v-model.trim="matricule" maxlength="20" required>
+                    <input type="text" id="matricule" v-model.trim="matricule" maxlength="20" required>
                 </div>
                 <div class="champ">
                     <label for="nom">Nom</label>
-                    <input id="nom" v-model.trim="nom" maxlength="100" required>
+                    <input type="text" id="nom" v-model.trim="nom" maxlength="100" required>
                 </div>
 
+                <p class="consigne">Cochez les créneaux où vous êtes disponible :</p>
                 <div class="liste-creneaux">
                     <label class="creneau-option" v-for="c in disponibilites" :key="c.id">
                         <input type="checkbox" :value="c.id" v-model="selection">
@@ -56,6 +57,7 @@ require __DIR__ . '/includes/entete.php';
 
         <section class="section-top3">
             <h2>Disponibilités</h2>
+            <p class="consigne">Les meilleurs créneaux sont mis en évidence.</p>
             <table>
                 <tr><th>Créneau</th><th>Disponibles</th><th>Noms</th></tr>
                 <tr v-for="c in disponibilites" :key="c.id"

@@ -4,7 +4,6 @@ $scriptPage = 'js/admin.js';
 require __DIR__ . '/includes/entete.php';
 ?>
 <div id="app-admin" class="verticalComposition page-admin" v-cloak>
-    <div id="app-admin" class="verticalComposition page-admin" v-cloak>
 
     <section v-if="!jeton" class="section-connexion">
         <h2>Connexion enseignant</h2>
@@ -12,7 +11,7 @@ require __DIR__ . '/includes/entete.php';
         <form @submit.prevent="connecter">
             <div class="champ">
                 <label for="identifiant">Identifiant</label>
-                <input id="identifiant" v-model.trim="identifiant" required autocomplete="username">
+                <input type="text" id="identifiant"v-model.trim="identifiant" required autocomplete="username">
             </div>
             <div class="champ">
                 <label for="motDePasse">Mot de passe</label>
@@ -51,7 +50,7 @@ require __DIR__ . '/includes/entete.php';
             <form @submit.prevent="enregistrerTravail">
                 <div class="champ">
                     <label for="titre">Titre</label>
-                    <input id="titre" v-model="travail.titre" maxlength="150" required>
+                    <input type="text" id="titre"v-model="travail.titre" maxlength="150" required>
                 </div>
                 <div class="champ">
                     <label for="description">Description</label>
@@ -120,6 +119,5 @@ require __DIR__ . '/includes/entete.php';
             <button type="button" class="btn-danger" @click="confirmerSuppression">Supprimer</button>
         </div>
     </dialog>
-</div>
 </div>
 <?php require __DIR__ . '/includes/pied.php'; ?>
