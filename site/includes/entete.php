@@ -1,4 +1,4 @@
-<?php?>
+<?php // Requires $titrePage, defined by the page before the include ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="css/style.css?v=<?= filemtime(__DIR__ . '/../css/style.css') ?>">
 </head>
 <body>
- <header class='navbar'>
-        <a href='index.php' class='logo'>DEX</a>
-        <nav>
-            <a href='index.php'>Accueil</a>
-            <a href='admin.php' class='lien-connexion'>Se connecter</a>
-        </nav>
-    </header>
+<header class="navbar">
+    <a href="index.php" class="logo">DEX</a>
+    <nav>
+        <a href="index.php">Accueil</a>
+        <a href="admin.php" class="lien-connexion">Administration</a>
+    </nav>
+</header>
 <main>

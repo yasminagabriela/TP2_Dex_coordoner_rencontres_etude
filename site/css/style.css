@@ -8,6 +8,7 @@
 /*PLaster logo*/
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Climate+Crisis:YEAR@1979&family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&family=Intel+One+Mono:ital,wght@0,300..700;1,300..700&family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Plaster&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto+Slab:wght@100..900&family=Sigmar&display=swap');
 
+[v-cloak] { display: none; }
 
 :root {
   --navy: #2F4858;
@@ -253,7 +254,7 @@ button {
 
 /* the colored box: only the travail info */
 .detail-travail {
-    /*background-image: url(images/Background_leaves.png);*/
+    /*background-image: url("../images/Background_leaves.png");*/
     background-color:var(--bg);
     border-radius: 10px;
     padding: 2rem 1.5rem;
