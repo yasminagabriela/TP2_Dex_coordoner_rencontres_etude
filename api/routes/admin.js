@@ -277,7 +277,7 @@ adminRouter.put('/api/travaux/:id', verifierToken, async (req, res) => {
         if (!dateRemise) {
             erreurs.push('La date de remise est invalide.');
         }
-        if (dateDisponible && dateRemise && dateRemise.slice(0, 10) < dateDisponible) {
+        if (dateDisponible && dateRemise && dateRemise <= `${dateDisponible} 00:00:00`) {
             erreurs.push('La remise doit être après la date de disponibilité.');
         }
         if (typeof ouvert !== 'boolean') {
