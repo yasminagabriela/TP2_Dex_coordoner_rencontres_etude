@@ -196,7 +196,8 @@ require_once __DIR__ . '/template.php';
 </main>
 
 <?php afficherPied(); ?>
-<script src="../vue/admin.js"></script>
+<!-- ?v= change à chaque modification du fichier : le navigateur recharge alors la nouvelle version -->
+<script src="../vue/admin.js?v=<?= filemtime(__DIR__ . '/../vue/admin.js') ?>"></script>
 
 </body>
 </html>
