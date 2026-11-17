@@ -180,7 +180,7 @@ require_once __DIR__ . '/template.php';
 
 
     <!-------------------- 3. CONFIRMATION DE SUPPRESSION D'UN CRÉNEAU -------------------->
-    <!-- Ouvrir avec dialog.showModal() ; remplir #nb-reponses-suppression avec le nombre de réponses. -->
+    <!-- Ouvrir avec dialog.showModal() ; le texte de #texte-suppression est écrit par demanderConfirmation() dans admin.js. -->
     <dialog id="dialog-suppression" class="dialog-suppression">
         <form method="dialog">
             <h2>Supprimer ce créneau ?</h2>

@@ -47,7 +47,7 @@ function verifierToken(req, res, next) {
 // ---------- outils de l'API -----------
 
 function lireDateHeure(valeur) {
-    if (typeof valeur !== 'String')  return null;
+    if (typeof valeur !== 'string')  return null;
 
     const morceaux = valeur.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?$/);
     if (!morceaux) return null;
@@ -262,9 +262,9 @@ adminRouter.put('/api/travaux/:id', verifierToken, async (req, res) => {
 
 
         if(typeof titre !== 'string' || titre.trim() === '' || titre.trim().length > 150) {
-            erreurs.push("Le titre est obligatoitre.");
+            erreurs.push("Le titre est obligatoire (150 caractères maximum).");
         }
-        if(typeof description !== 'string' || description.trim()){
+        if(typeof description !== 'string' || description.trim() === ''){
             erreurs.push("La description est obligatoire");
         }
         
@@ -341,7 +341,7 @@ adminRouter.route('/api/travaux/:id/creneaux')
 
             let plusGrand = 0;
             for(const creneau of existants) {
-                const numero = Number.parseInt(creneau.id.slice(travailId.length + 1));
+                const numero = Number.parseInt(creneau.id.slice(travailId.length + 1), 10);
                 if (numero > plusGrand) plusGrand = numero;
             }
 
@@ -354,7 +354,7 @@ adminRouter.route('/api/travaux/:id/creneaux')
 
             res.status(201).json({ id: nouvelId, travail_id: travailId, debut, fin });
 
-        } catch(erreurs) {
+        } catch(erreur) {
             console.error(erreur);
             res.status(500).json({ erreurs : ['Erreur du server.'] });
         }
