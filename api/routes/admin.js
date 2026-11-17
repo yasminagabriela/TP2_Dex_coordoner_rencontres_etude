@@ -8,6 +8,12 @@ const jetons = new Map();
 const DUREE_JETON = 2 * 60 * 60 * 1000; // ceci est supposé d'être 2 heures (en millisecondes)
 
 
+
+
+
+
+
+
 // Répond 405 quand la méthode n'est pas permise sur une adresse existante.
 function methodeNonPermise(req, res) {
     res.status(405).json({ erreurs: ['Méthode non permise.'] });
@@ -103,6 +109,15 @@ async function chercherCreneau(creneauId) {
     `, [creneauId]); 
     return lignes[0];
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -212,6 +227,16 @@ adminRouter.route('/api/admin/travaux')
     .all(methodeNonPermise);
 
 
+
+
+
+
+
+
+
+
+
+
 // PUT /api/travaux/:id
 // Corps : { titre, description, type, disponible, remise, ouvert }
 // Modifie un travail. Son cours ne peut pas être changé.
@@ -280,6 +305,12 @@ adminRouter.put('/api/travaux/:id', verifierToken, async (req, res) => {
 });
 
 
+
+
+
+
+
+
 // POST /api/travaux/:id/creneaux
 // Corps : { debut, fin }
 // Ajoute un créneau au travail. L'id est généré : <id du travail>-NN (ex. web2-tp1-04).
@@ -333,6 +364,14 @@ adminRouter.route('/api/travaux/:id/creneaux')
     .all(methodeNonPermise);
 
 
+
+
+
+
+
+
+
+
 // PUT /api/creneaux/:id
 // Corps : { debut, fin }
 // Modifie les heures d'un créneau. Son travail ne peut pas être changé.
@@ -342,13 +381,61 @@ adminRouter.route('/api/travaux/:id/creneaux')
 // Supprime un créneau (ses disponibilités sont supprimées en cascade).
 // Réponses : 204, 401, 403, 404, 500
 adminRouter.route('/api/creneaux/:id')
-    .put(verifierToken, (req, res) => {
+    .put(verifierToken, async (req, res) => {
         const creneauId = req.params.id;
-        const { debut, fin } = req.body;
+
+        try {
+            const creneau = await chercherCreneau(creneauId);
+            if(!creneau) {
+                return res.status(404).json({ erreurs : ['Créneau introuvable'] });
+
+            }
+            if(creneau.utilisateur_id !== req.utilisateur.id) {
+                return res.status(403).json({ erreurs : ["Ce créneau n'appartient pas à un de vos cours"] });
+
+            }
+
+            const { erreurs, debut, fin } = validerCreneau(req.body);
+
+            if(erreurs.length > 0) {
+                return res.status(400).json({ erreurs });
+            }
+
+
+            await pool.execute(
+                'UPDATE creneaux SET debut = ?, fin = ? WHERE id = ?',
+                [debut, fin, creneauId]
+            );
+            res.status(204).end();
+
+
+        } catch(erreur) {
+            console.error(erreur);
+            res.status(500).json({ erreurs : ['Erreur du server!!!!'] });
+        }
 
     })
-    .delete(verifierToken, (req, res) => {
+    .delete(verifierToken, async (req, res) => {
         const creneauId = req.params.id;
+
+       try {
+            const creneau = await chercherCreneau(creneauId);
+            if (!creneau) {
+                return res.status(404).json({ erreurs: ['Créneau introuvable.'] });
+            }
+            if (creneau.utilisateur_id !== req.utilisateur.id) {
+                return res.status(403).json({ erreurs: ["Ce créneau n'appartient pas à un de vos cours."] });
+            }
+
+            // ON DELETE CASCADE (dans init.sql) supprime aussi ses disponibilités.
+            await pool.execute('DELETE FROM creneaux WHERE id = ?', [creneauId]);
+            res.status(204).end();
+
+        } catch (erreur) {
+            console.error(erreur);
+            res.status(500).json({ erreurs: ['Erreur du serveur.'] });
+        }
+
 
     })
     .all(methodeNonPermise);
