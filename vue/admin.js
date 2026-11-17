@@ -14,6 +14,15 @@ const btnDeconnexion   = document.getElementById('btn-deconnexion');
 
 
 
+const formAjoutCreneau    = document.getElementById('form-ajout-creneau');
+const champNouveauDebut   = document.getElementById('nouveau-debut');
+const champNouveauFin     = document.getElementById('nouveau-fin');
+const dialogSuppression   = document.getElementById('dialog-suppression');
+const texteSuppression    = document.getElementById('texte-suppression');
+
+
+
+
 // afficher une section ou l'autre
 
 
@@ -283,6 +292,90 @@ function afficherCreneaux(creneaux) {
         tbodyCreneaux.append(tr);
     }
 }
+
+
+
+// -------------- Enregistrer le travail (PUT) --------------
+
+formTravail.addEventListener('submit', async (evenement) => {
+    evenement.preventDefault();
+
+    const reponse = await fetchAdmin(`/api/travaux/${encodeURIComponent(champTravailId.value)}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            titre : champTitre.value,
+            description: champDescription.value,
+            type: champType.value,
+            disponible: champDisponible.value,
+            remise: champRemise.value,
+            ouvert: champOuvert.checked
+        })
+    });
+
+    if(reponse.ok) {
+        afficherErreurs(erreursTravail, []);
+        chargerTravaux();
+    } else if (reponse.status !== 401) {
+        const donnees = await reponse.json();
+        afficherErreurs(erreursTravail, donnees.erreurs);
+    }
+});
+
+
+
+
+
+
+
+
+
+// ----------- Ajouter un créneau (POST) -----------
+formAjoutCreneau.addEventListener('submit', async (evenement) => {
+    evenement.preventDefault();
+    const travailId = champTravailId.value;
+
+
+    const reponse = await fetchAdmin(`/api/travaux/${encodeURIComponent(travailId)}/creneaux`, {
+        method: 'POST',
+        body: JSON.stringify({ debut: champNouveauDebut.value, fin: champNouveauFin.value })
+    });
+
+
+    if(reponse.ok) {
+        formAjoutCreneau.reset();
+        ouvrirTravail(travailId)
+    } else if (reponse.status !== 401) {
+        const donnees = await reponse.json();
+        afficherErreurs(erreursCreneaux, donnees.erreurs);
+    }
+});
+
+
+
+
+
+
+
+// ---------------- Modifier un créneau (PUT) ----------------
+async function modifierCreneau(creneauId, debut, fin) {
+    const reponse  = await fetchAdmin(`/api/creneaux/${encodeURIComponent(creneauId)}`, {
+        method: 'PUT',
+        body: JSON.stringify({ debut, fin })
+    });
+
+    if (reponse.ok) {
+        ouvrirTravail(champTravailId.value);
+    } else if(reponse.status !== 401) {
+        const donnees = await reponse.json();
+        afficherErreurs(erreursCreneaux, donnees.erreurs);
+    }
+    
+}
+
+
+
+
+
 
 
 // ---------- vérifie si déjà connecté ----------
