@@ -127,16 +127,60 @@ publicRouter.get('/api/travaux/:id', async (req, res) => {
 // Pour chaque créneau : le nombre d'étudiants disponibles et leurs noms.
 // Réponses : 200, 404, 500
 publicRouter.route('/api/travaux/:id/disponibilites')
-    .get((req, res) => {
+    .get( async (req, res) => {
         const travailId = req.params.id;
+        const matricule = typeof req.query.matricule === 'string' ? req.query.matricule.trim() : '';
 
+        try {
+            const [travaux] = await pool.execute('SELECT id FROM travaux WHERE id = ?', [travailId]);
+
+            if (travaux.length === 0) {
+                return res.status(404).json({ erreurs : ['Travail introuvable.'] });
+            }
+
+            const [lignes] = await pool.execute(`
+                SELECT creneaux.id, creneaux.debut, creneaux.fin,
+                       disponibilites.matricule, disponibilites.nom
+                FROM creneaux
+                LEFT JOIN disponibilites ON disponibilites.creneau_id = creneaux.id
+                WHERE creneaux.travail_id = ?
+                ORDER BY creneaux.debut, disponibilites.nom
+            `, [travailId]);
+
+
+
+            // pour regrouper par row
+          const parCreneau = new Map();
+            for (const ligne of lignes) {
+                if (!parCreneau.has(ligne.id)) {
+                    parCreneau.set(ligne.id, {
+                        id: ligne.id, debut: ligne.debut, fin: ligne.fin,
+                        nombre: 0, noms: [], choisi: false
+                    });
+                }
+                const creneau = parCreneau.get(ligne.id);
+                if (ligne.nom !== null) {
+                    creneau.nombre++;
+                    creneau.noms.push(ligne.nom);
+                    if (matricule !== '' && ligne.matricule === matricule) {
+                        creneau.choisi = true;
+                    }
+                }
+            }
+            res.status(200).json([...parCreneau.values()]);
+
+
+        } catch (erreur) {
+            console.error(erreur);
+            res.status(500).json({ erreurs : ['Erreur du serveur.']});
+        }
     })
     .all(methodeNonPermise);
 
 
 
 
-    
+
 
 // PUT /api/travaux/:id/disponibilites/:matricule
 // Corps : { nom, creneaux: [...] }
