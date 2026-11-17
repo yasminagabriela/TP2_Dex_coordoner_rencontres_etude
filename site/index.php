@@ -56,7 +56,7 @@ foreach ($travaux as $travail) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dex</title>
-    <link rel="stylesheet" href="../UI/style.css?v=<?= filemtime(__DIR__ . '/../UI/style.css') ?>">
+    <link rel="stylesheet" href="../UI/css/style.css?v=<?= filemtime(__DIR__ . '/../UI/css/style.css') ?>">
 </head>
 <body>
 
