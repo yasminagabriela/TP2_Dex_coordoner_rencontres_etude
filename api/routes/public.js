@@ -11,6 +11,9 @@ function methodeNonPermise(req, res) {
 
 // ------ routes publiques (pour les étudiants) ------
 
+
+
+
 // GET /api/cours
 // Liste des cours.
 // Réponses : 200, 500
@@ -28,13 +31,45 @@ publicRouter.route('/api/cours')
     .all(methodeNonPermise);
 
 
+
+
+
+
 // GET /api/travaux  (optionnel : ?cours=<id>)
 // Liste des travaux OUVERTS, peut être limitée à un cours avec req.query.cours.
 // Réponses : 200, 500
 publicRouter.route('/api/travaux')
-    .get((req, res) => {
+    .get( async (req, res) => {
         const coursId = req.query.cours; // undefined si absent
+        let sql = `
+            SELECT travaux.id, travaux.cours_id, cours.titre AS cours_titre,
+                   travaux.titre, travaux.description, travaux.type,
+                   travaux.disponible, travaux.remise
+            FROM travaux
+            JOIN cours ON cours.id = travaux.cours_id
+            WHERE travaux.ouvert = 1`;
+        const params = [];
 
+
+        if (coursId !== undefined && coursId !== '') {
+            if (typeof coursId !== 'string') {
+                return res.status(400).json({erreurs : ['Le filtre de cours est invalide']});
+            }
+            sql += ' AND travaux.cours_id = ?';
+            params.push(coursId);
+        }
+
+
+        sql += 'ORDER BY cours.titre, travaux.remise'
+
+
+        try {
+            const [travaux] = await pool.execute(sql, params);
+            res.status(200).json(travaux);
+        } catch(erreur) {
+            console.error(erreur);
+            res.status(500).json({ erreurs : ['Erreur du serveur.'] });
+        }
     })
     .all(methodeNonPermise);
 
@@ -84,6 +119,10 @@ publicRouter.get('/api/travaux/:id', async (req, res) => {
 });
 
 
+
+
+
+
 // GET /api/travaux/:id/disponibilites
 // Pour chaque créneau : le nombre d'étudiants disponibles et leurs noms.
 // Réponses : 200, 404, 500
@@ -94,6 +133,10 @@ publicRouter.route('/api/travaux/:id/disponibilites')
     })
     .all(methodeNonPermise);
 
+
+
+
+    
 
 // PUT /api/travaux/:id/disponibilites/:matricule
 // Corps : { nom, creneaux: [...] }
