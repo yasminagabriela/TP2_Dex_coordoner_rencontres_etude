@@ -314,6 +314,7 @@ formTravail.addEventListener('submit', async (evenement) => {
 
     if(reponse.ok) {
         afficherErreurs(erreursTravail, []);
+        sectionModifier.hidden = true; // ferme le formulaire après l'enregistrement
         chargerTravaux();
     } else if (reponse.status !== 401) {
         const donnees = await reponse.json();
