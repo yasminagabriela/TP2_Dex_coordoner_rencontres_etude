@@ -375,6 +375,43 @@ async function modifierCreneau(creneauId, debut, fin) {
 
 
 
+// ------------ supprimer et confirmer --------------
+
+function messageSuppression(nb) {
+    if (nb === 0) return "Ce créneau n'a aucune réponse. Le supprimer ?";
+    if (nb === 1) return 'Ce créneau a 1 réponse. Elle sera supprimée. Continuer ?';
+    return `Ce créneau a ${nb} réponses. Elles seront supprimées. Continuer ?`;
+}
+
+// Ouvre la boîte et attend le choix : true = Supprimer, false = Annuler (ou Échap).
+function demanderConfirmation(nb) {
+    texteSuppression.textContent = messageSuppression(nb);
+    dialogSuppression.returnValue = '';
+    dialogSuppression.showModal();
+
+    return new Promise((resoudre) => {
+        dialogSuppression.addEventListener('close', () => {
+            resoudre(dialogSuppression.returnValue === 'confirmer');
+        }, { once: true });
+    });
+}
+
+async function supprimerCreneau(creneauId, nbReponses) {
+    const confirme = await demanderConfirmation(nbReponses);
+    if (!confirme) return;
+
+    const reponse = await fetchAdmin(`/api/creneaux/${encodeURIComponent(creneauId)}`, {
+        method: 'DELETE'
+    });
+
+    if (reponse.ok) {
+        ouvrirTravail(champTravailId.value);
+    } else if (reponse.status !== 401) {
+        const donnees = await reponse.json();
+        afficherErreurs(erreursCreneaux, donnees.erreurs);
+    }
+}
+
 
 
 
