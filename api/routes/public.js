@@ -15,8 +15,15 @@ function methodeNonPermise(req, res) {
 // Liste des cours.
 // Réponses : 200, 500
 publicRouter.route('/api/cours')
-    .get((req, res) => {
-
+    .get( async (req, res) => {
+        try {
+            const [cours] = await pool.execute(
+                'SELECT id, titre FROM cours ORDER BY titre'
+            );
+        } catch (erreur) {
+            console.error(erreur);
+            res.status(500).json({ erreurs : ['Erreur du server.']});
+        }
     })
     .all(methodeNonPermise);
 
