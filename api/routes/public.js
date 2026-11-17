@@ -23,6 +23,7 @@ publicRouter.route('/api/cours')
             const [cours] = await pool.execute(
                 'SELECT id, titre FROM cours ORDER BY titre'
             );
+            res.status(200).json(cours);
         } catch (erreur) {
             console.error(erreur);
             res.status(500).json({ erreurs : ['Erreur du server.']});
@@ -60,7 +61,7 @@ publicRouter.route('/api/travaux')
         }
 
 
-        sql += 'ORDER BY cours.titre, travaux.remise'
+        sql += ' ORDER BY cours.titre, travaux.remise'
 
 
         try {
@@ -234,7 +235,11 @@ publicRouter.route('/api/travaux/:id/disponibilites/:matricule')
 
                 const uniques = [ ...new Set(creneaux)];
 
-                connexion = await pool.execute( 'DELETE FROM disponibilites WHERE travail_id = ? AND matricule = ?',
+                // Transaction : le DELETE et les INSERT réussissent ensemble, ou rien n'est changé.
+                connexion = await pool.getConnection();
+                await connexion.beginTransaction();
+
+                await connexion.execute('DELETE FROM disponibilites WHERE travail_id = ? AND matricule = ?',
                 [travailId, matricule]);
 
                 for (const creneauId of uniques) {

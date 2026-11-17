@@ -56,4 +56,22 @@ Démarrer Apache dans XAMPP et ouvrir :
 | prof2       | web2026      | Marc Tremblay | 420-244-AH, 420-253-AH |
 
 ## Structure du projet
-(arborescence des dossiers)
+```
+├── init.sql              Création de la base DexAppBD et données de départ
+├── package.json          Dépendances et script « npm start » de l'API
+├── api/
+│   ├── server.js         Démarrage d'Express, CORS, réponses 404 et erreurs en JSON
+│   ├── db.js             Pool de connexions MySQL (mysql2)
+│   └── routes/
+│       ├── public.js     Routes des étudiants (cours, travaux, disponibilités)
+│       └── admin.js      Connexion par jeton et routes des enseignants
+└── site/
+    ├── index.php         Accueil : liste des travaux ouverts
+    ├── travail.php       Un travail : choix des disponibilités
+    ├── admin.php         Administration des travaux et des créneaux
+    ├── 404.php           Page introuvable
+    ├── includes/         En-tête et pied de page communs
+    ├── js/               Applications Vue et appels à l'API (api.js, config.js)
+    ├── css/              Feuille de style
+    └── images/
+```
